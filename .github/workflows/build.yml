@@ -26,9 +26,6 @@ jobs:
           if [ $RUNNER_OS == "Linux" ]; then
             sudo apt-get update && sudo apt-get install -y g++
           fi
-          if [ $RUNNER_OS == "macOS" ]; then
-            brew install gcc
-          fi
 
       - name: Compile C++ files on Linux/macOS
         if: runner.os != 'Windows'
