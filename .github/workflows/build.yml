@@ -17,38 +17,38 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Install g++ on Ubuntu and macOS
-      if: runner.os != 'Windows'
-      run: |
-        if [ $RUNNER_OS == "Linux" ]; then
-          sudo apt-get update && sudo apt-get install -y g++
-        fi
-        if [ $RUNNER_OS == "macOS" ]; then
-          brew install gcc
-        fi
+      - name: Install g++ on Ubuntu and macOS
+        if: runner.os != 'Windows'
+        run: |
+          if [ $RUNNER_OS == "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y g++
+          fi
+          if [ $RUNNER_OS == "macOS" ]; then
+            brew install gcc
+          fi
 
-    - name: Compile C++ files on Linux/macOS
-      if: runner.os != 'Windows'
-      run: |
-        for file in *.cpp; do
-          g++ -o "${file%.cpp}-${RUNNER_OS}" "$file"
-        done
+      - name: Compile C++ files on Linux/macOS
+        if: runner.os != 'Windows'
+        run: |
+          for file in *.cpp; do
+            g++ -o "${file%.cpp}-${RUNNER_OS}" "$file"
+          done
 
-    - name: Compile C++ files on Windows
-      if: runner.os == 'Windows'
-      run: |
-        for %i in (*.cpp) do g++ -o "%~ni-%RUNNER_OS%" "%i"
+      - name: Compile C++ files on Windows
+        if: runner.os == 'Windows'
+        run: |
+          Get-ChildItem -Filter *.cpp | ForEach-Object { g++ $_.FullName -o "$($_.BaseName)-windows.exe" }
 
-    - name: List compiled binaries
-      run: ls -al
+      - name: List compiled binaries
+        run: ls -al
 
-    - name: Upload binaries as artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: compiled-binaries-${{ matrix.os }}
-        path: |
-          *.exe
-          *.out
+      - name: Upload binaries as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: compiled-binaries-${{ matrix.os }}
+          path: |
+            *.exe
+            *.out
