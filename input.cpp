@@ -1,14 +1,13 @@
 #include <iostream>
 
-int main() {
-
+int main()
+{
 	int age;
 	float gpa;
 	char letter;
 
 	std::cout << "Enter your age: ";
 	std::cin >> age;
-
 
 	std::cout << "Enter your GPA: ";
 	std::cin >> gpa;
@@ -21,5 +20,4 @@ int main() {
 	std::cout << letter << ", flop ass letter ijbol" << "\n";
 
 	return 0;
-
 }
