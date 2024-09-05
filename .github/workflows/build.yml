@@ -34,7 +34,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           for file in *.cpp; do
-            g++ -o "${file%.cpp}-${RUNNER_OS}" "$file"
+            g++ -o "${file%.cpp}-${RUNNER_OS}.out" "$file"
           done
 
       - name: Compile C++ files on Windows
