@@ -1,4 +1,4 @@
-// ccin / cout
+// cin / cout
 #include <iostream>
 
 // string type
@@ -8,7 +8,8 @@
 // setprecision, setw
 #include <iomanip>
 
-int main() {
+int main()
+{
     int a;
     int b;
     long c;
@@ -54,11 +55,11 @@ int main() {
     // manipulations apply to the whole cout
     // so you might have to flip left/right
     std::cout << std::left << std::setw(40) << -12341234.1234 << "xD" << std::endl;
-    
+
     // kinda justifying based on the positive/negative value of the number.
     std::cout << std::internal << std::setw(40) << -12341234.1234 << "xD" << std::endl;
 
-    std::cout<<"\n\n\n";
+    std::cout << "\n\n\n";
 
     // string = input()
 
@@ -69,7 +70,7 @@ int main() {
     // but for example in this program, in the first prompt if you type "4 20" it will store 4 to a and 20 to b, then prompt you for "Enter a letter".
     // if you type in the first prompt "4 20 xD" it will store 4 to a and 20 to b, then since it's looking for a single character it will store x to letter, and then it will look for a string type, "D", and store it to name, then prompt you for a real number.
     std::cout << "Enter a number: ";
-    std :: cin >> a;
+    std ::cin >> a;
     std::cout << "Enter another number: ";
     std::cin >> b;
     std::cout << "Enter a letter: ";
@@ -81,12 +82,12 @@ int main() {
 
     std::cout << std::endl;
 
-    std::cout<< a << std::endl;
+    std::cout << a << std::endl;
     std::cout << b << std::endl;
     std::cout << letter << std::endl;
     std::cout << name << std::endl;
     std::cout << pie << std::endl;
-    
+
     // to ignore the new lines in the cin object / stream you'll use this
     std::cin.ignore();
 
