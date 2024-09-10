@@ -1,6 +1,8 @@
 Labs/
 Projects/
 
+.idea/
+
 .DS_Store
 
 *.out
