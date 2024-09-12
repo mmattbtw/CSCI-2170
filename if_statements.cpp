@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 int main()
 {
@@ -16,12 +17,19 @@ int main()
     }
     else if (age < 30)
     {
+        std::string name;
+        name = "matt";
         std::cout << "W" << std::endl;
+        std::cout << name << std::endl;
     }
     else
     {
         std::cout << "erm" << std::endl;
     }
+    // vvvv this will not work because variables are block scoped
+    // std::cout << name << std::endl;
+    // you also can't declare statements inside of ... switch statements
+    // like not the individual case things, just below switch (var) { yknow...
     if (age < 14)
         std::cout << "skibidi toilet rizz kai cenat fanum tax" << std::endl;
 
@@ -53,6 +61,9 @@ int main()
         std::cout << "Erm" << std::endl;
         break;
     }
+
+    // gonna do ternary in sep. file....
+    // see conditional_operator.cpp
 
     return 0;
 }
