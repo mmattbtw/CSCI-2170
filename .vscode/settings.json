@@ -42,6 +42,7 @@
     "tuple": "cpp",
     "typeinfo": "cpp",
     "algorithm": "cpp",
-    "version": "cpp"
+    "version": "cpp",
+    "array": "cpp"
   }
 }
