@@ -1,0 +1,6 @@
+H Pass the Class
+H Pass Exam 1
+L Eat
+L Sleep
+M Extra program
+W TODO
