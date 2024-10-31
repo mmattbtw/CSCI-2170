@@ -70,26 +70,27 @@ jobs:
               # Compile all .cpp files in this directory
               $output = "build_cache/$($_.Name)-windows.exe"
               $cppFiles = (Get-ChildItem -Path $_.FullName -Filter *.cpp | ForEach-Object { $_.FullName }) -join ' '
-              $compileCommand = "g++ -std=c++11 $cppFiles -o $output"
+              $compileCommand = "g++ $cppFiles -o $output"
               Write-Output "Running command: $compileCommand"
               if (!(Test-Path $output) -or (Get-ChildItem -Path $_.FullName -Filter *.cpp | Where-Object { $_.LastWriteTime -gt (Get-Item $output).LastWriteTime })) {
                 Invoke-Expression $compileCommand
               }
             }
           }
-
+      
           # Compile standalone .cpp files not in directories with headers
           Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object {
             $dir = $_.DirectoryName
             if (-not (Get-ChildItem -Path $dir -Filter *.h)) {
               $output = "build_cache/$($_.BaseName)-windows.exe"
-              $compileCommand = "g++ -std=c++11 $_.FullName -o $output"
+              $compileCommand = "g++ `"$($_.FullName)`" -o `"$output`""
               Write-Output "Running command: $compileCommand"
               if (!(Test-Path $output) -or ($_.LastWriteTime -gt (Get-Item $output).LastWriteTime)) {
                 Invoke-Expression $compileCommand
               }
             }
           }
+
 
       - name: Upload binaries as artifacts
         uses: actions/upload-artifact@v4
