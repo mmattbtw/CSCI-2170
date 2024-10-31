@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: build_cache
-          key: ${{ runner.os }}-build-${{ hashFiles('**/*.cpp') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('**/*.cpp', '**/*.h') }}
           restore-keys: |
             ${{ runner.os }}-build-
 
@@ -34,23 +34,41 @@ jobs:
       - name: Compile C++ files on Linux/macOS
         if: runner.os != 'Windows'
         run: |
-          find . -name '*.cpp' | while read file; do
-            output="build_cache/$(basename ${file%.cpp})-${RUNNER_OS}.out"
-            # Only compile if output file doesn't exist or source file is newer
-            if [[ ! -f "$output" || "$file" -nt "$output" ]]; then
-              g++ -o "$output" "$file"
+          # Check if header files are present
+          if find . -name '*.h' | grep -q '.'; then
+            # Compile all .cpp files together if headers are found
+            output="build_cache/all-cpp-${RUNNER_OS}.out"
+            if [[ ! -f "$output" || "$(find . -name '*.cpp' -newer "$output")" ]]; then
+              g++ -o "$output" $(find . -name '*.cpp')
             fi
-          done
+          else
+            # Compile each .cpp file individually if no headers are found
+            find . -name '*.cpp' | while read file; do
+              output="build_cache/$(basename ${file%.cpp})-${RUNNER_OS}.out"
+              if [[ ! -f "$output" || "$file" -nt "$output" ]]; then
+                g++ -o "$output" "$file"
+              fi
+            done
+          fi
 
       - name: Compile C++ files on Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object {
-            $output = "build_cache/$($_.BaseName)-windows.exe"
-            # Only compile if output file doesn't exist or source file is newer
-            if (!(Test-Path $output) -or ($_.LastWriteTime -gt (Get-Item $output).LastWriteTime)) {
-              g++ $_.FullName -o $output
+          if (Get-ChildItem -Recurse -Filter *.h) {
+            # Compile all .cpp files together if headers are found
+            $output = "build_cache/all-cpp-windows.exe"
+            if (!(Test-Path $output) -or (Get-ChildItem -Recurse -Filter *.cpp | Where-Object { $_.LastWriteTime -gt (Get-Item $output).LastWriteTime })) {
+              g++ (Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object { $_.FullName }) -o $output
+            }
+          }
+          else {
+            # Compile each .cpp file individually if no headers are found
+            Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object {
+              $output = "build_cache/$($_.BaseName)-windows.exe"
+              if (!(Test-Path $output) -or ($_.LastWriteTime -gt (Get-Item $output).LastWriteTime)) {
+                g++ $_.FullName -o $output
+              }
             }
           }
 
