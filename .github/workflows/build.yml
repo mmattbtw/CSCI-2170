@@ -34,19 +34,22 @@ jobs:
       - name: Compile C++ files on Linux/macOS
         if: runner.os != 'Windows'
         run: |
-          # Check if header files are present
           if find . -name '*.h' | grep -q '.'; then
             # Compile all .cpp files together if headers are found
             output="build_cache/all-cpp-${RUNNER_OS}.out"
+            compile_command="g++ -o $output $(find . -name '*.cpp')"
+            echo "Running command: $compile_command"
             if [[ ! -f "$output" || "$(find . -name '*.cpp' -newer "$output")" ]]; then
-              g++ -o "$output" $(find . -name '*.cpp')
+              eval $compile_command
             fi
           else
             # Compile each .cpp file individually if no headers are found
             find . -name '*.cpp' | while read file; do
               output="build_cache/$(basename ${file%.cpp})-${RUNNER_OS}.out"
+              compile_command="g++ -o $output $file"
+              echo "Running command: $compile_command"
               if [[ ! -f "$output" || "$file" -nt "$output" ]]; then
-                g++ -o "$output" "$file"
+                eval $compile_command
               fi
             done
           fi
@@ -58,16 +61,21 @@ jobs:
           if (Get-ChildItem -Recurse -Filter *.h) {
             # Compile all .cpp files together if headers are found
             $output = "build_cache/all-cpp-windows.exe"
+            $cppFiles = (Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object { $_.FullName }) -join ' '
+            $compileCommand = "g++ $cppFiles -o $output"
+            Write-Output "Running command: $compileCommand"
             if (!(Test-Path $output) -or (Get-ChildItem -Recurse -Filter *.cpp | Where-Object { $_.LastWriteTime -gt (Get-Item $output).LastWriteTime })) {
-              g++ (Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object { $_.FullName }) -o $output
+              Invoke-Expression $compileCommand
             }
           }
           else {
             # Compile each .cpp file individually if no headers are found
             Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object {
               $output = "build_cache/$($_.BaseName)-windows.exe"
+              $compileCommand = "g++ $_.FullName -o $output"
+              Write-Output "Running command: $compileCommand"
               if (!(Test-Path $output) -or ($_.LastWriteTime -gt (Get-Item $output).LastWriteTime)) {
-                g++ $_.FullName -o $output
+                Invoke-Expression $compileCommand
               }
             }
           }
