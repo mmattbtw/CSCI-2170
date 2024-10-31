@@ -39,7 +39,7 @@ jobs:
             if find "$dir" -maxdepth 1 -name '*.h' | grep -q '.'; then
               # Compile all .cpp files in this directory
               output="build_cache/$(basename $dir)-${RUNNER_OS}.out"
-              compile_command="g++ -o $output $(find "$dir" -maxdepth 1 -name '*.cpp')"
+              compile_command="g++ -std=c++11 -o $output $(find "$dir" -maxdepth 1 -name '*.cpp')"
               echo "Running command: $compile_command"
               if [[ ! -f "$output" || "$(find "$dir" -name '*.cpp' -newer "$output")" ]]; then
                 eval $compile_command
@@ -52,7 +52,7 @@ jobs:
             dir=$(dirname "$file")
             if ! find "$dir" -maxdepth 1 -name '*.h' | grep -q '.'; then
               output="build_cache/$(basename ${file%.cpp})-${RUNNER_OS}.out"
-              compile_command="g++ -o $output $file"
+              compile_command="g++ -std=c++11 -o $output $file"
               echo "Running command: $compile_command"
               if [[ ! -f "$output" || "$file" -nt "$output" ]]; then
                 eval $compile_command
@@ -70,7 +70,7 @@ jobs:
               # Compile all .cpp files in this directory
               $output = "build_cache/$($_.Name)-windows.exe"
               $cppFiles = (Get-ChildItem -Path $_.FullName -Filter *.cpp | ForEach-Object { $_.FullName }) -join ' '
-              $compileCommand = "g++ $cppFiles -o $output"
+              $compileCommand = "g++ -std=c++11 $cppFiles -o $output"
               Write-Output "Running command: $compileCommand"
               if (!(Test-Path $output) -or (Get-ChildItem -Path $_.FullName -Filter *.cpp | Where-Object { $_.LastWriteTime -gt (Get-Item $output).LastWriteTime })) {
                 Invoke-Expression $compileCommand
@@ -83,7 +83,7 @@ jobs:
             $dir = $_.DirectoryName
             if (-not (Get-ChildItem -Path $dir -Filter *.h)) {
               $output = "build_cache/$($_.BaseName)-windows.exe"
-              $compileCommand = "g++ $_.FullName -o $output"
+              $compileCommand = "g++ -std=c++11 $_.FullName -o $output"
               Write-Output "Running command: $compileCommand"
               if (!(Test-Path $output) -or ($_.LastWriteTime -gt (Get-Item $output).LastWriteTime)) {
                 Invoke-Expression $compileCommand
