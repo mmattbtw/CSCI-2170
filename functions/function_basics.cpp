@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include "mystuff.h"
 
 // what are the things every function requires in c++
 // a return type and an identifier, and a parameter list
@@ -65,7 +64,7 @@ int main()
     std::cout << "AFTER: " << name << " | " << color << std::endl;
     print_greeting5(name, color);
     std::cout << "AFTER: " << name << " | " << color << std::endl;
-    print_greeting3();
+    // print_greeting3();
 
     int a = 7;
     int b = 8;
@@ -98,11 +97,11 @@ void print_greeting2(std::string name, std::string color)
     return;
 }
 
-void print_greeting3()
-{
-    std::cout << "Hello from header file!!" << std::endl;
-    return;
-}
+// void print_greeting3()
+// {
+//     std::cout << "Hello from header file!!" << std::endl;
+//     return;
+// }
 
 std::string string_prompt(std::string prompt)
 {
