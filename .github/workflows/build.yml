@@ -34,43 +34,54 @@ jobs:
       - name: Compile C++ files on Linux/macOS
         if: runner.os != 'Windows'
         run: |
-          if find . -name '*.h' | grep -q '.'; then
-            # Compile all .cpp files together if headers are found
-            output="build_cache/all-cpp-${RUNNER_OS}.out"
-            compile_command="g++ -o $output $(find . -name '*.cpp')"
-            echo "Running command: $compile_command"
-            if [[ ! -f "$output" || "$(find . -name '*.cpp' -newer "$output")" ]]; then
-              eval $compile_command
+          # Find directories containing .h files and compile all .cpp files within them as a unit
+          find . -type d | while read dir; do
+            if find "$dir" -maxdepth 1 -name '*.h' | grep -q '.'; then
+              # Compile all .cpp files in this directory
+              output="build_cache/$(basename $dir)-${RUNNER_OS}.out"
+              compile_command="g++ -o $output $(find "$dir" -maxdepth 1 -name '*.cpp')"
+              echo "Running command: $compile_command"
+              if [[ ! -f "$output" || "$(find "$dir" -name '*.cpp' -newer "$output")" ]]; then
+                eval $compile_command
+              fi
             fi
-          else
-            # Compile each .cpp file individually if no headers are found
-            find . -name '*.cpp' | while read file; do
+          done
+
+          # Compile standalone .cpp files not in directories with headers
+          find . -name '*.cpp' | while read file; do
+            dir=$(dirname "$file")
+            if ! find "$dir" -maxdepth 1 -name '*.h' | grep -q '.'; then
               output="build_cache/$(basename ${file%.cpp})-${RUNNER_OS}.out"
               compile_command="g++ -o $output $file"
               echo "Running command: $compile_command"
               if [[ ! -f "$output" || "$file" -nt "$output" ]]; then
                 eval $compile_command
               fi
-            done
-          fi
+            fi
+          done
 
       - name: Compile C++ files on Windows
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          if (Get-ChildItem -Recurse -Filter *.h) {
-            # Compile all .cpp files together if headers are found
-            $output = "build_cache/all-cpp-windows.exe"
-            $cppFiles = (Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object { $_.FullName }) -join ' '
-            $compileCommand = "g++ $cppFiles -o $output"
-            Write-Output "Running command: $compileCommand"
-            if (!(Test-Path $output) -or (Get-ChildItem -Recurse -Filter *.cpp | Where-Object { $_.LastWriteTime -gt (Get-Item $output).LastWriteTime })) {
-              Invoke-Expression $compileCommand
+          # Find directories with .h files and compile all .cpp files within them as a unit
+          Get-ChildItem -Recurse -Directory | ForEach-Object {
+            if (Get-ChildItem -Path $_.FullName -Filter *.h) {
+              # Compile all .cpp files in this directory
+              $output = "build_cache/$($_.Name)-windows.exe"
+              $cppFiles = (Get-ChildItem -Path $_.FullName -Filter *.cpp | ForEach-Object { $_.FullName }) -join ' '
+              $compileCommand = "g++ $cppFiles -o $output"
+              Write-Output "Running command: $compileCommand"
+              if (!(Test-Path $output) -or (Get-ChildItem -Path $_.FullName -Filter *.cpp | Where-Object { $_.LastWriteTime -gt (Get-Item $output).LastWriteTime })) {
+                Invoke-Expression $compileCommand
+              }
             }
           }
-          else {
-            # Compile each .cpp file individually if no headers are found
-            Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object {
+
+          # Compile standalone .cpp files not in directories with headers
+          Get-ChildItem -Recurse -Filter *.cpp | ForEach-Object {
+            $dir = $_.DirectoryName
+            if (-not (Get-ChildItem -Path $dir -Filter *.h)) {
               $output = "build_cache/$($_.BaseName)-windows.exe"
               $compileCommand = "g++ $_.FullName -o $output"
               Write-Output "Running command: $compileCommand"
