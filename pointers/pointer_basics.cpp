@@ -18,8 +18,16 @@ int main()
     int *two{nullptr};
 
     std::cout << one << std::endl;
+    std::cout << one << " -- " << two << std::endl;
+    std::cout << x << " -- " << &x << std::endl;
 
     one = &x;
+
+    std::cout << one << " -- " << *one << std::endl;
+    // indirection (*one) is almost like a "get value"
+    *one = 1000;
+    std::cout << *one << std::endl;
+    std::cout << *one * 3 << std::endl;
 
     return 0;
 }
