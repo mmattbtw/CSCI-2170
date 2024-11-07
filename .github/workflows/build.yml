@@ -31,11 +31,11 @@ jobs:
       - name: Check if build directory exists
         id: build_dir
         run: |
-          if [ -d "build_cache" ]; then
-            echo "::set-output name=exists::true"
-          else
-            echo "::set-output name=exists::false"
-          fi
+          if (Test-Path -Path "build_cache" -PathType Container) {
+            Write-Output "::set-output name=exists::true"
+          } else {
+            Write-Output "::set-output name=exists::false"
+          }
 
       - name: Create build directory
         if: steps.build_dir.outputs.exists == 'false'
