@@ -30,6 +30,7 @@ jobs:
 
       - name: Check if build directory exists
         id: build_dir
+        shell: pwsh
         run: |
           if (Test-Path -Path "build_cache" -PathType Container) {
             Write-Output "::set-output name=exists::true"
