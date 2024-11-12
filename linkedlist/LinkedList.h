@@ -12,12 +12,14 @@ class LinkedList
 {
 private:
     Node *m_head;
+    Node *m_tail;
 
 public:
-    LinkedList() : m_head(nullptr) {};
+    LinkedList() : m_head(nullptr), m_tail(nullptr) {};
 
     void print() const;
     void push_back(int value);
+    void push_front(int value);
     bool empty() const { return !m_head; }
 
     ~LinkedList();

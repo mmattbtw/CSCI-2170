@@ -24,13 +24,12 @@ int main(int argc, char *argv[])
     LinkedList numbers;
 
     int num;
-    int count;
 
     numfile >> num;
     while (numfile)
     {
+        // numbers.push_front(num);
         numbers.push_back(num);
-        count++;
         numfile >> num;
     }
     numfile.close();
