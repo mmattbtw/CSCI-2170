@@ -53,6 +53,9 @@
     "deque": "cpp",
     "forward_list": "cpp",
     "queue": "cpp",
-    "stack": "cpp"
+    "stack": "cpp",
+    "iterator": "cpp",
+    "memory": "cpp",
+    "print": "cpp"
   }
 }

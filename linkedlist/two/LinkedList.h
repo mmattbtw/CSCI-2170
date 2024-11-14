@@ -19,9 +19,18 @@ public:
     LinkedList(const LinkedList &copy_from);
 
     void print() const;
+    void print_reverse() const;
+
     void push_back(int value);
     void push_front(int value);
+
+    void pop_front();
+    void pop_back();
+
+    void clear();
     bool empty() const { return !m_head; }
+
+    LinkedList &operator=(LinkedList copy_from);
 
     ~LinkedList();
 };
