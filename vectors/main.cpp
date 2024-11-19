@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include "MyVector.h"
+#include <vector>
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +20,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    MyVector numbers;
+    // MyVector numbers;
+    std::vector<int> numbers;
 
     int num;
 

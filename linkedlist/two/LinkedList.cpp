@@ -64,6 +64,7 @@ void LinkedList::print() const
 // i mean could you just add previous to node and swap the addresses...
 // wait im cooking??
 // wait..,.
+// wait no thats gonna require recurssion maybe so
 void LinkedList::print_reverse() const
 {
     if (empty())
