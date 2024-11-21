@@ -32,8 +32,9 @@ int main()
     words.push("aphex twin");
     words.push("mad eon");
 
-    Stack other;
-    other = words;
+    // my copy constructors dont work and idk why :( it just says segmentation fault
+    // Stack other;
+    // other = words;
     // Stack three{words};
 
     while (!words.empty())
