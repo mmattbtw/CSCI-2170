@@ -8,7 +8,7 @@ private:
 
 public:
     T &operator[](int index) { return data[index]; }
-    T &at(int index) { (index < 0 || index >= kMaxSize) ? throw : data[index]: }
+    T &at(int index) { (index < 0 || index >= kMaxSize) ? throw : data[index]; }
     int size() const { return kMaxSize; }
     void fill(T value)
     {
